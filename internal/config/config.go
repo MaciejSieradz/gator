@@ -19,7 +19,7 @@ func (cfg *Config) SetUser(userName string) error {
 }
 
 func Read() (Config, error) {
-	filePath, err := getConfigGilePath()
+	filePath, err := getConfigFilePath()
 	if err != nil {
 		return Config{}, err
 	}
@@ -40,7 +40,7 @@ func Read() (Config, error) {
 	return cfg, nil
 }
 
-func getConfigGilePath() (string, error) {
+func getConfigFilePath() (string, error) {
 	dir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
@@ -50,7 +50,7 @@ func getConfigGilePath() (string, error) {
 }
 
 func write(cfg Config) error {
-	fullPath, err := getConfigGilePath()
+	fullPath, err := getConfigFilePath()
 	if err != nil {
 		return err
 	}
