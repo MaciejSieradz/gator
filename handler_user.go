@@ -9,6 +9,16 @@ import (
 	"github.com/google/uuid"
 )
 
+func handlerReset(s *state, cmd command) error {
+	err := s.db.DeleteUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error reseting users: %w", err)
+	}
+
+	fmt.Println("Database reset successfully!")
+	return nil
+}
+
 func handlerRegister(s *state, cmd command) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
@@ -33,7 +43,7 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("error setting current user name: %w", err)
 	}
 
-	fmt.Println("User created successfully")
+	fmt.Println("User created successfully!")
 	printUser(user)
 	return nil
 }
@@ -55,6 +65,22 @@ func handlerLogin(s *state, cmd command) error {
 	}
 
 	fmt.Println("User switched successfully!")
+	return nil
+}
+
+func handlerListUsers(s *state, cmd command) error {
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting list of users: %w", err)
+	}
+
+	for _, user := range users {
+		userName := fmt.Sprintf("* %s", user.Name)
+		if user.Name == s.cfg.CurrentUserName {
+			userName = userName + " (current)"
+		}
+		fmt.Println(userName)
+	}
 	return nil
 }
 
